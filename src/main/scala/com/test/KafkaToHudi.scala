@@ -35,6 +35,7 @@ object KafkaToHudi extends  App {
   val onfluentApiKey = ""
   val confluentSecret = ""
   val confluentBootstrapServers = ""  
+  val confluentTopicName = ""
     // Define kafka flow
     val dataStreamReader = spark
       .readStream

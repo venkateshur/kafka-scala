@@ -32,15 +32,22 @@ object KafkaToHudi extends  App {
       }
     })
 
+  val onfluentApiKey = ""
+  val confluentSecret = ""
+  val confluentBootstrapServers = ""  
     // Define kafka flow
     val dataStreamReader = spark
       .readStream
+      .readStream
       .format("kafka")
-      .option("kafka.bootstrap.servers", "localhost:9092")
-      .option("subscribe", "testTopic")
-      .option("startingOffsets", "latest")
-      .option("maxOffsetsPerTrigger", 100000)
-      .option("failOnDataLoss", false)
+      .option("kafka.bootstrap.servers", confluentBootstrapServers)
+      .option("kafka.security.protocol", "SASL_SSL")
+      .option(s"kafka.sasl.jaas.config", "kafkashaded.org.apache.kafka.common.security.plain.PlainLoginModule required username='$c' password='{}';".format(confluentApiKey, confluentSecret))
+      .option("kafka.ssl.endpoint.identification.algorithm", "https")
+      .option("kafka.sasl.mechanism", "PLAIN")
+      .option("subscribe", confluentTopicName)
+      .option("startingOffsets", "earliest")
+      .option("failOnDataLoss", "false")
       .load().select(col("value").as("avroData"))
 
   val tableName1 = "test1"
